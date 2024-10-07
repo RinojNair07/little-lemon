@@ -1,19 +1,27 @@
+import { Link } from 'react-router-dom';
 import restaurantImg from '../images/restauranfood.jpg';
 
+import Menu from "./Menu";
+
 const Home = () => {
-    return <main>
-        <article>
-            <aside className='description'>
-                <h1 className='heading-lemon'>Little Lemon</h1>
-                <h2 className='sub-heading-lemon'>Chicago</h2>
-                <p className='description-lemon'>We are family owned mediterian restaurant, focused on tradition recepies served with a modern twist</p>
-                <button>Reserve a Table</button>
-            </aside>
-            <aside>
-                <img src={restaurantImg} width={275} height={300} alt="Restaurant Image"></img>
-            </aside>
-        </article>
-    </main>
+    return <>
+        <div className="hero-section-background">
+            <div className="hero-section-container">
+                <div className="section-left">
+                    <h1>Little Lemon</h1>
+                    <h2>Chicago</h2>
+                    <p>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</p>
+                    <Link to="/bookingPage"><button className="btn">Reserve a Table</button></Link>
+                </div>
+                <div className="section-right">
+                    <div className="image-box">
+                        <img src={restaurantImg} alt="Serving delicious dish" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <Menu></Menu>
+    </>
 }
 
 export default Home;
