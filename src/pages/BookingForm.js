@@ -11,6 +11,11 @@ function BookingForm() {
     });
     const [submitMessage, setSubmitMessage] = useState("")
     const [availableTime, setAvailableTime] = useState([])
+    const [nameError, setNameError] = useState(null)
+    const [guestsError, setGuestsError] = useState(null)
+    const [dateError, setDateError] = useState(null)
+    const [timeError, setTimeError] = useState(null)
+    const [occasionError, setOccasionError] = useState(null)
 
     useEffect(() => {
         const today = new Date();
@@ -18,18 +23,83 @@ function BookingForm() {
         setAvailableTime(availableTime);
     }, []);
 
+    function isValidDate(dateString) {
+        const yyyymmdd = dateString.toString().split("-");
+        const dateObj = new Date(
+            parseInt(yyyymmdd[0]),
+            parseInt(yyyymmdd[1]) - 1,
+            parseInt(yyyymmdd[2]) + 1
+        );
+        if (dateObj < new Date()) return false;
+        return true;
+    }
+
+    function validateForm() {
+        console.log(formInput.name, " klop")
+        if (formInput.name === "") {
+            setNameError("Please provide a name")
+        } else {
+            setNameError(null)
+        }
+
+        if (formInput.guests < 1) {
+            setGuestsError("Minimum acceppted guest is one");
+        } else if (formInput.guests > 10) {
+            setGuestsError("Maximum acceppted guest is 10");
+        } else {
+            setGuestsError(null);
+        }
+
+        if (formInput.date === "") {
+            setDateError("Please provide a booking date");
+        } else {
+            setDateError(null);
+        }
+        if (!isValidDate(formInput.date)) {
+            setDateError(`Sorry! Reservations not available for this date!`);
+        } else {
+            setDateError(null);
+        }
+
+        if (formInput.time === "") {
+            setTimeError("Please provide a booking time");
+        } else {
+            setTimeError(null);
+        }
+
+        if (formInput.occasion === "") {
+            setOccasionError("Please provide a occasion");
+        } else {
+            setOccasionError(null);
+        }
+
+        if (
+            nameError === null &&
+            dateError === null &&
+            timeError === null &&
+            guestsError === null &&
+            occasionError === null
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     const submitForm = (e) => {
         e.preventDefault();
-        let successSubmit = submitAPI(formInput)
-        if (successSubmit) {
-            setSubmitMessage("Form successfully submitted");
-            setFormInput({
-                "name": '',
-                "date": new Date(),
-                "res-time": '17:00',
-                "guests": 1,
-                "occasion": 'Birthday'
-            });
+        if (validateForm()) {
+            let successSubmit = submitAPI(formInput)
+            if (successSubmit) {
+                setSubmitMessage("Form successfully submitted");
+                setFormInput({
+                    "name": '',
+                    "date": new Date(),
+                    "res-time": '17:00',
+                    "guests": 1,
+                    "occasion": 'Birthday'
+                });
+            }
         }
     }
 
@@ -46,6 +116,7 @@ function BookingForm() {
                         value={formInput.name}
                         onChange={(e) => setFormInput({ ...formInput, name: e.target.value })}
                     />
+                    <span className='error-msg'>{nameError}</span>
                 </div>
                 <div className="field">
                     <label htmlFor="date">Date</label>
@@ -87,50 +158,3 @@ function BookingForm() {
 }
 
 export default BookingForm
-
-
-// < form onSubmit = { handleSubmit(formSubmit) } >
-//     <fieldset>
-//         <div className="field">
-//             <label htmlFor="name">Full Name</label>
-//             <input type="text" placeholder="John Doe" name="name" {...register("name")} />
-//             <span className="error-message">{errors.name?.message}</span>
-//         </div>
-//         <div className="field">
-//             <label htmlFor="email">Email</label>
-//             <input type="text" placeholder="text@email.com" name="email" {...register("email")} />
-//             <span className="error-message">{errors.email?.message}</span>
-//         </div>
-//         <div className="field">
-//             <label htmlFor="telephone">Telephone</label>
-//             <input type="tel" placeholder="233 00 000 0000" name="telephone" {...register("telephone")} />
-//             <span className="error-message">{errors.telephone?.message}</span>
-//         </div>
-
-//         {/*<div className="guestsdate">*/}
-//         <div className="field occasion">
-//             <label htmlFor="occasion">Occasion (optional)</label>
-//             <div className="options">
-//                 <select name="occasion" {...register("occasion")}>
-//                     <option value="select">Select occasion</option>
-//                     <option value="birthday">Birthday</option>
-//                     <option value="engagement">Engagement</option>
-//                     <option value="anniversary">Anniversary</option>
-//                 </select>
-//             </div>
-//         </div>
-//         <div className="field guest">
-//             <label htmlFor="guests">Guests</label>
-//             <input type="number" placeholder="2" name="guests" {...register("guests")} />
-//             <span className="error-message">{errors.guests?.message}</span>
-//         </div>
-//         {/*</div>*/}
-
-//         <div className="field">
-//             <label htmlFor="date">Date & Time</label>
-//             <input type="datetime-local" name="date" {...register("date")} />
-//             <span className="error-message">{errors.date?.message}</span>
-//         </div>
-//         <button className="reserve-btn" type="submit">Reserve</button>
-//     </fieldset>
-//     </form >

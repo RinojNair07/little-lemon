@@ -627,3 +627,8 @@ select {
   color: green;
   font-weight: 800;
 }
+
+.error-msg {
+  color: red;
+  font-size: 0.8em;
+}
